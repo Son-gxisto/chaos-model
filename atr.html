@@ -9,7 +9,7 @@
 html, body {
   margin: 0;
   padding: 0;
-  background-color: red;
+  background-color: rgb(255, 255, 255);
 }
 canvas {
   display: block;
@@ -95,13 +95,13 @@ canvas {
         this.z = z;
     }
 
-    drawPoints(pointsCount, particlesCount) {
+    drawPoints(pointsCount/*, particlesCount*/) {
         this.totalMass = pointsCount;
 
         let points = [];
-        this.particles.length = 0;
+        //this.particles.length = 0;
 
-        let particlesStep = pointsCount / particlesCount;
+        //let particlesStep = pointsCount / particlesCount;
 
         for (let i = 0; i < pointsCount; ++i) {
             this.update();
@@ -112,9 +112,9 @@ canvas {
             this.maxVelocity = Math.max(this.maxVelocity, velocity);
 
 
-            if (i % particlesStep === 0) {
+            /*if (i % particlesStep === 0) {
                 this.particles.push(new Particle(this.x, this.y, this.z));
-            }
+            }*/
         }
 
         this.centerX /= this.totalMass;
@@ -124,7 +124,7 @@ canvas {
         return points;
     }
 
-    drawParticles() {
+    /*drawParticles() {
         let result = [];
 
         for (let i = 0; i < this.particles.length; ++i) {
@@ -136,7 +136,7 @@ canvas {
         }
 
         return result;
-    }
+    }*/
 }
 
 
@@ -153,9 +153,9 @@ class Particle {
 		this.z += dz;
 	}
 
-	getCoordinates() {
+	/*getCoordinates() {
 		return [this.x, this.y, this.z];
-	}
+	}*/
 }
 
 let mainSketch = function (p) {
@@ -169,13 +169,18 @@ let mainSketch = function (p) {
     p.rho = 28;
     p.beta = 8 / 3;
 
-    p.pointsCount = 7000;
-    p.particlesCount = 50;
+    p.pointsCount = 10000;
+    //p.particlesCount = 50;
     p.sliderPointsCount = 0;
 
     let sliderSigma = null;
     let sliderRho = null;
     let sliderBeta = null;
+    // Наверное нужно убрать все, что связано с последним слайдером, отвечающий, видимо, за качество отрисовки
+    // Еще желательно добавить кнопку "выставить дефолтные значения аттрактора лоренца"
+    // Соответсвенно желательно каждый слайдер подписать, за какое значение от отвечает
+    // Мб добавить справа от него его нынешнее значение
+    // Либо заменить на поле для ввода, но придется переписывать часть скрипта видимо
     let sliderPointsCount = null;
 
     p.model = null;
@@ -188,7 +193,7 @@ let mainSketch = function (p) {
 
     function redrawModel() {
         p.model.resetCoordinates(x, y, z);
-        p.points = p.model.drawPoints(p.pointsCount, p.particlesCount);
+        p.points = p.model.drawPoints(p.pointsCount/*, p.particlesCount*/);
         p.center = p.model.getCenterOfMass();
         p.easycam.setCenter(p.center, 0);
     }
@@ -233,7 +238,7 @@ let mainSketch = function (p) {
         sliderPointsCount.input(changePointsCountBySlider);
 
         p.model = new LorenzAttractor(x, y, z, dt, p.sigma, p.rho, p.beta);
-        p.points = p.model.drawPoints(p.pointsCount, p.particlesCount);
+        p.points = p.model.drawPoints(p.pointsCount/*, p.particlesCount*/);
 
         p.easycam = p.createEasyCam(p.RendererGL);
 
@@ -246,7 +251,7 @@ let mainSketch = function (p) {
         p.center = p.model.getCenterOfMass();
         p.easycam.setCenter(p.center, 0);
         let distance = 350;
-        let rotation = [-0.2480524065198549, -0.1886425467149905, 0.7171889384935938, -0.6233169496259671];
+        let rotation = [1, 0, 0, 0];
         p.easycam.setDistance(distance, 0);
         p.easycam.setRotation(rotation, 0);
     };
@@ -260,21 +265,21 @@ let mainSketch = function (p) {
         p.push();
         p.translate(-p.model.centerX, -p.model.centerY, -p.model.centerZ);
 
-        p.stroke(61, 129, 211, 200);
+        p.stroke(1, 1, 1, 1);
         p.beginShape();
         for (let i = 0; i < p.pointsCount; ++i) {
             p.vertex(p.points[i].x, p.points[i].y, p.points[i].z);
         }
         p.endShape();
 
-        p.stroke(255, 102, 1, 200);
+        /*p.stroke(255, 102, 1, 200);
         for (let v of p.model.drawParticles()) {
             p.push();
             let coordinates = v.getCoordinates();
             p.translate(coordinates[0], coordinates[1], coordinates[2]);
             //p.sphere(0.3);
             p.pop();
-        }
+        }*/
         p.pop();
     }
 };
