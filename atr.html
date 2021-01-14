@@ -148,7 +148,7 @@
 
                 p.sigma = 10;
                 p.rho = 28;
-                p.beta = 8 / 3;
+                p.beta = Number((8/3).toFixed(5));
 
                 p.pointsCount = 10000;
                 p.sliderPointsCount = 0;
@@ -201,7 +201,7 @@
                 }
 
                 p.setup = function () {
-                    p.canvas = p.createCanvas(p.min(p.windowWidth, 1400), 1000, p.WEBGL);
+                    p.canvas = p.createCanvas(p.min(p.windowWidth, 800), 600, p.WEBGL);
                     p.colorMode(p.RGB);
 
                     sliderSigma = p.createSlider(1, 50, p.sigma, 0.1);
