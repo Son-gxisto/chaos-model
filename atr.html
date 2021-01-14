@@ -17,275 +17,249 @@
   <div class="sl"> <div class="in">β =</div> <div class="in" id="sl3"></div></div>
     <script src="https://rawgit.com/diwi/p5.EasyCam/master/dwgl.js"></script>
     <script src="https://rawgit.com/diwi/p5.EasyCam/master/p5.easycam.js"></script>
-    <script>class LorenzAttractor {
-    constructor(x, y, z, dt, sigma, rho, beta) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    <script>
+        let info;
+        let coordinates = {};
+        function listener(event) {
+            info = event.data;
+            info = info.split(" ");
+            coordinates.x = Number(info[0]);
+            coordinates.y = Number(info[1]);
+            coordinates.z = Number(info[2]);
 
-        this.dt = dt;
+            class LorenzAttractor {
+                constructor(x, y, z, dt, sigma, rho, beta) {
+                    this.x = x;
+                    this.y = y;
+                    this.z = z;
 
-        this.sigma = sigma;
-        this.rho = rho;
-        this.beta = beta;
+                    this.dt = dt;
 
-        this.centerX = x;
-        this.centerY = y;
-        this.centerZ = z;
+                    this.sigma = sigma;
+                    this.rho = rho;
+                    this.beta = beta;
 
-        this.totalMass = 1;
+                    this.centerX = x;
+                    this.centerY = y;
+                    this.centerZ = z;
 
-        this.minVelocity = 10000000;
-        this.maxVelocity = 0;
+                    this.totalMass = 1;
 
-        this.particles = [];
-    }
+                    this.minVelocity = 10000000;
+                    this.maxVelocity = 0;
 
-    getCoordinates() {
-        return [this.x, this.y, this.z];
-    }
+                    this.particles = [];
+                }
 
-    getCenterOfMass() {
-        return [this.centerX, this.centerY, this.centerZ];
-    }
+                getCoordinates() {
+                    return [this.x, this.y, this.z];
+                }
 
-    getParticles() {
-        return this.particles;
-    }
+                getCenterOfMass() {
+                    return [this.centerX, this.centerY, this.centerZ];
+                }
 
-    getDxDt(x, y, z) {
-        return this.sigma * (y - x);
-    }
+                getParticles() {
+                    return this.particles;
+                }
 
-    getDyDt(x, y, z) {
-        return x * (this.rho - z) - y;
-    }
+                getDxDt(x, y, z) {
+                    return this.sigma * (y - x);
+                }
 
-    getDzDt(x, y, z) {
-        return x * y - this.beta * z;
-    }
+                getDyDt(x, y, z) {
+                    return x * (this.rho - z) - y;
+                }
 
-    getVelocity(x, y, z) {
-        let dx = this.getDxDt(x, y, z) * this.dt;
-        let dy = this.getDyDt(x, y, z) * this.dt;
-        let dz = this.getDzDt(x, y, z) * this.dt;
-        return Math.sqrt(dx * dx + dy * dy + dz * dz);
-    }
+                getDzDt(x, y, z) {
+                    return x * y - this.beta * z;
+                }
 
-    getRangeVelocity() {
-        return this.maxVelocity - this.minVelocity;
-    }
+                getVelocity(x, y, z) {
+                    let dx = this.getDxDt(x, y, z) * this.dt;
+                    let dy = this.getDyDt(x, y, z) * this.dt;
+                    let dz = this.getDzDt(x, y, z) * this.dt;
+                    return Math.sqrt(dx * dx + dy * dy + dz * dz);
+                }
 
-    update() {
-        let x = this.x;
-        let y = this.y;
-        let z = this.z;
-        this.x += this.getDxDt(x, y, z) * this.dt;
-        this.y += this.getDyDt(x, y, z) * this.dt;
-        this.z += this.getDzDt(x, y, z) * this.dt;
-        this.centerX += this.x;
-        this.centerY += this.y;
-        this.centerZ += this.z;
-    }
+                getRangeVelocity() {
+                    return this.maxVelocity - this.minVelocity;
+                }
 
-    resetCoordinates(x, y, z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
+                update() {
+                    let x = this.x;
+                    let y = this.y;
+                    let z = this.z;
+                    this.x += this.getDxDt(x, y, z) * this.dt;
+                    this.y += this.getDyDt(x, y, z) * this.dt;
+                    this.z += this.getDzDt(x, y, z) * this.dt;
+                    this.centerX += this.x;
+                    this.centerY += this.y;
+                    this.centerZ += this.z;
+                }
 
-    drawPoints(pointsCount/*, particlesCount*/) {
-        this.totalMass = pointsCount;
+                resetCoordinates(x, y, z) {
+                    this.x = x;
+                    this.y = y;
+                    this.z = z;
+                }
 
-        let points = [];
-        //this.particles.length = 0;
+                drawPoints(pointsCount) {
+                    this.totalMass = pointsCount;
 
-        //let particlesStep = pointsCount / particlesCount;
+                    let points = [];
+                    for (let i = 0; i < pointsCount; ++i) {
+                        this.update();
+                        points.push(new p5.Vector(this.x, this.y, this.z));
+                        let velocity = this.getVelocity(this.x, this.y, this.z);
+                        this.minVelocity = Math.min(this.minVelocity, velocity);
+                        this.maxVelocity = Math.max(this.maxVelocity, velocity);
+                    }
 
-        for (let i = 0; i < pointsCount; ++i) {
-            this.update();
-            points.push(new p5.Vector(this.x, this.y, this.z));
+                    this.centerX /= this.totalMass;
+                    this.centerY /= this.totalMass;
+                    this.centerZ /= this.totalMass;
 
-            let velocity = this.getVelocity(this.x, this.y, this.z);
-            this.minVelocity = Math.min(this.minVelocity, velocity);
-            this.maxVelocity = Math.max(this.maxVelocity, velocity);
+                    return points;
+                }
+            }
 
 
-            /*if (i % particlesStep === 0) {
-                this.particles.push(new Particle(this.x, this.y, this.z));
-            }*/
+            class Particle {
+                constructor(x, y, z) {
+                    this.x = x;
+                    this.y = y;
+                    this.z = z;
+                }
+
+                update(dx, dy, dz) {
+                    this.x += dx;
+                    this.y += dy;
+                    this.z += dz;
+                }
+            }
+
+            let mainSketch = function (p) {
+                let x = coordinates.x;
+                let y = coordinates.y;
+                let z = coordinates.z;
+
+                let dt = 0.01;
+
+                p.sigma = 10;
+                p.rho = 28;
+                p.beta = 8 / 3;
+
+                p.pointsCount = 10000;
+                p.sliderPointsCount = 0;
+
+                let sliderSigma = null;
+                let sliderRho = null;
+                let sliderBeta = null;
+                let sliderPointsCount = null;
+
+                p.model = null;
+
+                p.easycam = null;
+                p.center = null;
+                p.points = [];
+
+                p.canvas = null;
+
+                function setValueToSliders() {
+                    document.getElementById("sl1").textContent = p.model.sigma;
+                    document.getElementById("sl2").textContent = p.model.rho;
+                    document.getElementById("sl3").textContent = p.model.beta;
+                }
+
+                function redrawModel() {
+                    p.model.resetCoordinates(x, y, z);
+                    p.points = p.model.drawPoints(p.pointsCount);
+                    p.center = p.model.getCenterOfMass();
+                    p.easycam.setCenter(p.center, 0);
+                    setValueToSliders();
+                }
+
+                function changeSigmaBySlider() {
+                    p.model.sigma = sliderSigma.value();
+                    redrawModel();
+                }
+
+                function changeRhoBySlider() {
+                    p.model.rho = sliderRho.value();
+                    redrawModel();
+                }
+
+                function changeBetaBySlider() {
+                    p.model.beta = sliderBeta.value();
+                    redrawModel();
+                }
+
+                function changePointsCountBySlider() {
+                    p.pointsCount = sliderPointsCount.value();
+                    redrawModel();
+                }
+
+                p.setup = function () {
+                    p.canvas = p.createCanvas(p.min(p.windowWidth, 1400), 1000, p.WEBGL);
+                    p.colorMode(p.RGB);
+
+                    sliderSigma = p.createSlider(1, 50, p.sigma, 0.1);
+                    sliderRho = p.createSlider(0.1, 45, p.rho, 0.1);
+                    sliderBeta = p.createSlider(0.1, 20, p.beta, 0.1);
+
+                    sliderSigma.position(5, 15);
+                    sliderRho.position(5, 35);
+                    sliderBeta.position(5, 55);
+
+                    sliderSigma.input(changeSigmaBySlider);
+                    sliderRho.input(changeRhoBySlider);
+                    sliderBeta.input(changeBetaBySlider);
+
+                    p.model = new LorenzAttractor(x, y, z, dt, p.sigma, p.rho, p.beta);
+                    p.points = p.model.drawPoints(p.pointsCount);
+
+                    p.easycam = p.createEasyCam(p.RendererGL);
+
+                    Dw.EasyCam.prototype.apply = function (n) {
+                        let o = this.cam;
+                        n = n || o.renderer,
+                        n && (this.camEYE = this.getPosition(this.camEYE), this.camLAT = this.getCenter(this.camLAT), this.camRUP = this.getUpVector(this.camRUP), n._curCamera.camera(this.camEYE[0], this.camEYE[1], this.camEYE[2], this.camLAT[0], this.camLAT[1], this.camLAT[2], this.camRUP[0], this.camRUP[1], this.camRUP[2]))
+                    };
+
+                    p.center = p.model.getCenterOfMass();
+                    p.easycam.setCenter(p.center, 0);
+                    let distance = 350;
+                    let rotation = [1, 0, 0, 0];
+                    p.easycam.setDistance(distance, 0);
+                    p.easycam.setRotation(rotation, 0);
+                    setValueToSliders();
+                };
+
+                p.draw = function () {
+                    p.background(255, 255, 255);
+
+                    p.scale(6);
+                    p.noFill();
+
+                    p.push();
+                    p.translate(-p.model.centerX, -p.model.centerY, -p.model.centerZ);
+
+                    p.stroke(1, 1, 1, 1);
+                    p.beginShape();
+                    for (let i = 0; i < p.pointsCount; ++i) {
+                        p.vertex(p.points[i].x, p.points[i].y, p.points[i].z);
+                    }
+                    p.endShape();
+                    p.pop();
+                }
+            };
+            let fourthP5 = new p5(mainSketch);
         }
-
-        this.centerX /= this.totalMass;
-        this.centerY /= this.totalMass;
-        this.centerZ /= this.totalMass;
-
-        return points;
-    }
-
-    /*drawParticles() {
-        let result = [];
-
-        for (let i = 0; i < this.particles.length; ++i) {
-            let p = this.particles[i];
-            p.update(this.getDxDt(p.x, p.y, p.z) * this.dt,
-                     this.getDyDt(p.x, p.y, p.z) * this.dt,
-                     this.getDzDt(p.x, p.y, p.z) * this.dt);
-            result.push(p);
+        if (window.addEventListener) {
+            window.addEventListener("message", listener, false);
+        } else { // ie 8
+            window.attachEvent("onmessage", listener);
         }
-
-        return result;
-    }*/
-}
-
-
-class Particle {
-	constructor(x, y, z) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
-	}
-
-	update(dx, dy, dz) {
-		this.x += dx;
-		this.y += dy;
-		this.z += dz;
-	}
-
-	/*getCoordinates() {
-		return [this.x, this.y, this.z];
-	}*/
-}
-
-let mainSketch = function (p) {
-    let x = 0.01; 
-    let y = 0; 
-    let z = 1;
-
-    let dt = 0.01;
-
-    p.sigma = 10;
-    p.rho = 28;
-    p.beta = 8 / 3;
-
-    p.pointsCount = 10000;
-    //p.particlesCount = 50;
-    p.sliderPointsCount = 0;
-
-    let sliderSigma = null;
-    let sliderRho = null;
-    let sliderBeta = null;
-    // Наверное нужно убрать все, что связано с последним слайдером, отвечающий, видимо, за качество отрисовки
-    // Еще желательно добавить кнопку "выставить дефолтные значения аттрактора лоренца"
-    // Соответсвенно желательно каждый слайдер подписать, за какое значение от отвечает
-    let sliderPointsCount = null;
-
-    p.model = null;
-
-    p.easycam = null;
-    p.center = null;
-    p.points = [];
-
-    p.canvas = null;
-    function setValueToSliders() {
-        document.getElementById("sl1").textContent = p.model.sigma;
-        document.getElementById("sl2").textContent = p.model.rho;
-        document.getElementById("sl3").textContent = p.model.beta;
-    }
-    function redrawModel() {
-        p.model.resetCoordinates(x, y, z);
-        p.points = p.model.drawPoints(p.pointsCount/*, p.particlesCount*/);
-        p.center = p.model.getCenterOfMass();
-        p.easycam.setCenter(p.center, 0);
-        setValueToSliders();
-    }
-
-    function changeSigmaBySlider() {
-        p.model.sigma = sliderSigma.value();
-        redrawModel();
-    }
-
-    function changeRhoBySlider() {
-        p.model.rho = sliderRho.value();
-        redrawModel();
-    }
-
-    function changeBetaBySlider() {
-        p.model.beta = sliderBeta.value();
-        redrawModel();
-    }
-
-    function changePointsCountBySlider() {
-        p.pointsCount = sliderPointsCount.value();
-        redrawModel();
-    }
-
-    p.setup = function () {
-        p.canvas = p.createCanvas(p.min(p.windowWidth, 1400), 1000, p.WEBGL);
-        p.colorMode(p.RGB);
-
-        sliderSigma = p.createSlider(1, 50, p.sigma, 0.1);
-        sliderRho = p.createSlider(0.1, 45, p.rho, 0.1);
-        sliderBeta = p.createSlider(0.1, 20, p.beta, 0.1);
-        //sliderPointsCount = p.createSlider(5000, 10000, p.pointsCount, 100);
-
-        sliderSigma.position(5, 15);
-        sliderRho.position(5, 35);
-        sliderBeta.position(5, 55);
-        //sliderPointsCount.position(5, 65); */
-
-        sliderSigma.input(changeSigmaBySlider);
-        sliderRho.input(changeRhoBySlider);
-        sliderBeta.input(changeBetaBySlider);
-        //sliderPointsCount.input(changePointsCountBySlider);
-
-        p.model = new LorenzAttractor(x, y, z, dt, p.sigma, p.rho, p.beta);
-        p.points = p.model.drawPoints(p.pointsCount/*, p.particlesCount*/);
-
-        p.easycam = p.createEasyCam(p.RendererGL);
-
-        Dw.EasyCam.prototype.apply = function (n) {
-            let o = this.cam;
-            n = n || o.renderer,
-            n && (this.camEYE = this.getPosition(this.camEYE), this.camLAT = this.getCenter(this.camLAT), this.camRUP = this.getUpVector(this.camRUP), n._curCamera.camera(this.camEYE[0], this.camEYE[1], this.camEYE[2], this.camLAT[0], this.camLAT[1], this.camLAT[2], this.camRUP[0], this.camRUP[1], this.camRUP[2]))
-        };
-
-        p.center = p.model.getCenterOfMass();
-        p.easycam.setCenter(p.center, 0);
-        let distance = 350;
-        let rotation = [1, 0, 0, 0];
-        p.easycam.setDistance(distance, 0);
-        p.easycam.setRotation(rotation, 0);
-        setValueToSliders();
-    };
-
-    p.draw = function () {
-        p.background(255, 255, 255);
-
-        p.scale(6);
-        p.noFill();
-
-        p.push();
-        p.translate(-p.model.centerX, -p.model.centerY, -p.model.centerZ);
-
-        p.stroke(1, 1, 1, 1);
-        p.beginShape();
-        for (let i = 0; i < p.pointsCount; ++i) {
-            p.vertex(p.points[i].x, p.points[i].y, p.points[i].z);
-        }
-        p.endShape();
-        /*p.stroke(255, 102, 1, 200);
-        for (let v of p.model.drawParticles()) {
-            p.push();
-            let coordinates = v.getCoordinates();
-            p.translate(coordinates[0], coordinates[1], coordinates[2]);
-            //p.sphere(0.3);
-            p.pop();
-        }*/
-        p.pop();
-    }
-};
-
-let fourthP5 = new p5(mainSketch);
 </script>
 </body></html>
