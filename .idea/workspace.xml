@@ -19,7 +19,8 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c55eb2a1-70e1-4ead-92ef-14d87ceb2b46" name="Default Changelist" comment="">
+    <list default="true" id="c55eb2a1-70e1-4ead-92ef-14d87ceb2b46" name="Default Changelist" comment="-m &quot;slicers&quot;">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/atr.html" beforeDir="false" afterPath="$PROJECT_DIR$/atr.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/style.css" afterDir="false" />
@@ -58,6 +59,7 @@
       <option name="presentableId" value="Default" />
       <updated>1610564267706</updated>
       <workItem from="1610564272741" duration="2857000" />
+      <workItem from="1610617331928" duration="3310000" />
     </task>
     <task id="LOCAL-00001" summary="-m &quot;test&quot;">
       <created>1610565212444</created>
@@ -82,15 +84,17 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="-m &quot;test&quot;" />
-    <option name="LAST_COMMIT_MESSAGE" value="-m &quot;test&quot;" />
+    <MESSAGE value="-m &quot;slicers&quot;" />
+    <option name="LAST_COMMIT_MESSAGE" value="-m &quot;slicers&quot;" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="361" y="165" key="Vcs.Push.Dialog.v2" timestamp="1610565220052">
+    <state x="361" y="165" key="Vcs.Push.Dialog.v2" timestamp="1610628187862">
       <screen x="0" y="0" width="1536" height="864" />
     </state>
-    <state x="361" y="165" key="Vcs.Push.Dialog.v2/0.0.1536.864@0.0.1536.864" timestamp="1610565220052" />
+    <state x="361" y="165" key="Vcs.Push.Dialog.v2/0.0.1536.864@0.0.1536.864" timestamp="1610628187862" />
   </component>
 </project>

@@ -1,12 +1,21 @@
 input {
     background-color: red;
-    width: 23rem;
+    width: 80%;
     height: 1rem;
 }
 iframe {
+    position: center;
+    width: 1400px;
     margin: 5rem;
-    width:700px;
-    height:450px;
+    height: 1100px;
     overflow:hidden;
-    border: none;
+    border: 1px solid black;
+}
+canvas {
+    margin-top: 100px;
+    border: 1px solid gray;
+}
+div.slicer {
+    margin-top: 2px;
+    margin-left: 81%;
 }
