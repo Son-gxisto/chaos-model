@@ -200,6 +200,8 @@ let mainSketch = function (p) {
         p.points = p.model.drawPoints(p.pointsCount/*, p.particlesCount*/);
         p.center = p.model.getCenterOfMass();
         p.easycam.setCenter(p.center, 0);
+        document.getElementById("sl1").textContent = p.model.sigma;
+        document.getElementById("sl2").textContent = p.model.rho;
     }
 
     function changeSigmaBySlider() {
@@ -275,7 +277,6 @@ let mainSketch = function (p) {
             p.vertex(p.points[i].x, p.points[i].y, p.points[i].z);
         }
         p.endShape();
-
         /*p.stroke(255, 102, 1, 200);
         for (let v of p.model.drawParticles()) {
             p.push();
@@ -288,10 +289,9 @@ let mainSketch = function (p) {
     }
 };
 
-
 let fourthP5 = new p5(mainSketch);
 </script>
-    <div class="slicer"> slicer1 </div>
-    <div class="slicer"> slicer2 </div>
+    <div class="slicer"> slicer1 <p id="sl1"></p></div>
+    <div class="slicer"> slicer2 <p id="sl2"></p></div>
     <div class="slicer"> slicer3 </div>
 </body></html>
