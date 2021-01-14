@@ -9,17 +9,12 @@
     <link rel="stylesheet" href="normalize.css">
     <meta charset="utf-8">
 
-  <base href="https://editor.p5js.org/soloLev/embed/tiwI0Xhhh/"><style>
-html, body {
-  margin: 0;
-  padding: 0;
-  background-color: rgb(255, 255, 255);
-}
-canvas {
-  display: block;
-}
-</style></head>
+  <base href="https://editor.p5js.org/soloLev/embed/tiwI0Xhhh/">
+</head>
   <body>
+  <div class="sl"> <div class="in">slider1:   </div><div class="in" id="sl1"></div></div>
+  <div class="sl"> <div class="in">slider2:   </div> <div class="in" id="sl2"></div></div>
+  <div class="sl"> <div class="in">slider3:   </div> <div class="in" id="sl3"></div></div>
     <script src="https://rawgit.com/diwi/p5.EasyCam/master/dwgl.js"></script>
     <script src="https://rawgit.com/diwi/p5.EasyCam/master/p5.easycam.js"></script>
     <script>class LorenzAttractor {
@@ -183,8 +178,6 @@ let mainSketch = function (p) {
     // Наверное нужно убрать все, что связано с последним слайдером, отвечающий, видимо, за качество отрисовки
     // Еще желательно добавить кнопку "выставить дефолтные значения аттрактора лоренца"
     // Соответсвенно желательно каждый слайдер подписать, за какое значение от отвечает
-    // Мб добавить справа от него его нынешнее значение
-    // Либо заменить на поле для ввода, но придется переписывать часть скрипта видимо
     let sliderPointsCount = null;
 
     p.model = null;
@@ -194,14 +187,17 @@ let mainSketch = function (p) {
     p.points = [];
 
     p.canvas = null;
-
+    function setValueToSliders() {
+        document.getElementById("sl1").textContent = p.model.sigma;
+        document.getElementById("sl2").textContent = p.model.rho;
+        document.getElementById("sl3").textContent = p.model.beta;
+    }
     function redrawModel() {
         p.model.resetCoordinates(x, y, z);
         p.points = p.model.drawPoints(p.pointsCount/*, p.particlesCount*/);
         p.center = p.model.getCenterOfMass();
         p.easycam.setCenter(p.center, 0);
-        document.getElementById("sl1").textContent = p.model.sigma;
-        document.getElementById("sl2").textContent = p.model.rho;
+        setValueToSliders();
     }
 
     function changeSigmaBySlider() {
@@ -231,17 +227,17 @@ let mainSketch = function (p) {
         sliderSigma = p.createSlider(1, 50, p.sigma, 0.1);
         sliderRho = p.createSlider(0.1, 45, p.rho, 0.1);
         sliderBeta = p.createSlider(0.1, 20, p.beta, 0.1);
-        sliderPointsCount = p.createSlider(5000, 10000, p.pointsCount, 100);
+        //sliderPointsCount = p.createSlider(5000, 10000, p.pointsCount, 100);
 
-        sliderSigma.position(5, 5);
-        sliderRho.position(5, 25);
-        sliderBeta.position(5, 45);
-        sliderPointsCount.position(5, 65);
+        sliderSigma.position(5, 15);
+        sliderRho.position(5, 35);
+        sliderBeta.position(5, 55);
+        //sliderPointsCount.position(5, 65); */
 
         sliderSigma.input(changeSigmaBySlider);
         sliderRho.input(changeRhoBySlider);
         sliderBeta.input(changeBetaBySlider);
-        sliderPointsCount.input(changePointsCountBySlider);
+        //sliderPointsCount.input(changePointsCountBySlider);
 
         p.model = new LorenzAttractor(x, y, z, dt, p.sigma, p.rho, p.beta);
         p.points = p.model.drawPoints(p.pointsCount/*, p.particlesCount*/);
@@ -260,6 +256,7 @@ let mainSketch = function (p) {
         let rotation = [1, 0, 0, 0];
         p.easycam.setDistance(distance, 0);
         p.easycam.setRotation(rotation, 0);
+        setValueToSliders();
     };
 
     p.draw = function () {
@@ -291,7 +288,4 @@ let mainSketch = function (p) {
 
 let fourthP5 = new p5(mainSketch);
 </script>
-    <div class="slicer"> slicer1 <p id="sl1"></p></div>
-    <div class="slicer"> slicer2 <p id="sl2"></p></div>
-    <div class="slicer"> slicer3 </div>
 </body></html>
